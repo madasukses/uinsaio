@@ -39,6 +39,14 @@ header{height:56px;display:flex;justify-content:space-between;align-items:center
 .sc-n.g{color:var(--green)}.sc-n.y{color:var(--yellow)}.sc-n.r{color:var(--red)}.sc-n.p{color:#a855f7}
 .sc-l{font-size:10px;color:var(--muted);margin-top:2px}
 
+/* JENIS ROW */
+.jenis-row{display:flex;gap:8px;flex-shrink:0}
+.jc{background:var(--card);border:0.5px solid var(--border);border-radius:10px;padding:8px 14px;display:flex;align-items:center;gap:10px;flex:1}
+.jc-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.jc-n{font-size:20px;font-weight:600;color:var(--text);line-height:1}
+.jc-l{font-size:10px;color:var(--muted);margin-top:2px}
+
+
 /* CHIPS */
 .chips{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
 .chip{background:var(--surface);border:0.5px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
@@ -126,6 +134,11 @@ header{height:56px;display:flex;justify-content:space-between;align-items:center
       <div class="sc"><div class="sc-icon ic-green">✅</div><div><div class="sc-n g" id="k1">—</div><div class="sc-l">Aktif</div></div></div>
       <div class="sc"><div class="sc-icon ic-yellow">⚠️</div><div><div class="sc-n y" id="k2">—</div><div class="sc-l">Hampir Habis</div></div></div>
       <div class="sc"><div class="sc-icon ic-red">❌</div><div><div class="sc-n r" id="k3">—</div><div class="sc-l">Expired</div></div></div>
+    </div>
+    <div class="jenis-row" id="sum-jenis"></div>
+    <div class="summary" id="sum-jenis"></div>
+    <div class="summary" id="jenis-bar">
+      <!-- diisi JS -->
     </div>
     <div class="panel">
       <div class="ph">
@@ -308,6 +321,23 @@ function renderK(data){
   }).join('');
 
   $('k0').textContent=data.length;$('k1').textContent=aktif;$('k2').textContent=warn;$('k3').textContent=exp;
+
+  // Hitung per jenis (MoU/MoA/LOI/dll)
+  const jenisMap={};
+  data.forEach(r=>{
+    const j=(get(r,'Jenis','Jenis Kerjasama','Jenis MoU')||'Lainnya').trim();
+    const jup=j.toUpperCase();
+    jenisMap[jup]=(jenisMap[jup]||0)+1;
+  });
+  const jColors={'MOU':'#3b82f6','MOA':'#10b981','LOI':'#a855f7','MOU/MOA':'#f59e0b'};
+  const jDef=['#06b6d4','#f97316','#ec4899','#84cc16'];
+  let jci=0;
+  $('sum-jenis').innerHTML=Object.entries(jenisMap)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([j,n])=>{
+      const col=jColors[j]||jDef[jci++%jDef.length];
+      return`<div class="jc"><div class="jc-dot" style="background:${col}"></div><div><div class="jc-n">${n}</div><div class="jc-l">${j}</div></div></div>`;
+    }).join('');
 
   const thead=`<tr><th>Kampus / Unit</th><th>Negara</th><th>Jenis</th><th>Mulai</th><th>Berakhir</th><th>Status</th></tr>`;
   $('tk-head').innerHTML=`<table>${COL_K}<thead>${thead}</thead></table>`;
