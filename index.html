@@ -91,7 +91,7 @@ header{
 }
 /* Header tabel sticky */
 .tbl-head{flex-shrink:0;z-index:4;position:relative}
-.tbl-head table{width:100%;border-collapse:collapse}
+.tbl-head table{width:100%;border-collapse:collapse;table-layout:fixed}
 .tbl-head thead th{
   padding:6px 13px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
   color:var(--muted);background:var(--surface);border-bottom:0.5px solid var(--border);
@@ -105,12 +105,12 @@ header{
 @keyframes scrollUp{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
 
 /* ── TABLE ── */
-table{width:100%;border-collapse:collapse}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
 /* thead th handled in .tbl-head */
 tbody tr{border-bottom:0.5px solid rgba(255,255,255,0.04)}
 tbody tr:hover{background:rgba(59,130,246,0.04)}
-td{padding:7px 13px;font-size:12px;vertical-align:middle}
-.cm{font-size:12px;font-weight:500;color:var(--text)}
+td{padding:7px 13px;font-size:12px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm{font-size:12px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cs{font-size:10px;color:var(--muted);margin-top:1px}
 
 /* ── BADGE ── */
@@ -397,9 +397,11 @@ function renderK(data){
   $('k3').textContent=exp;
 
   const thead = `<tr><th>Kampus / Unit</th><th>Negara</th><th>Jenis</th><th>Mulai</th><th>Berakhir</th><th>Status</th></tr>`;
-  const tbody = `<table><tbody>${rows}</tbody></table>`;
+  const colK = '<colgroup><col style="width:36%"><col style="width:15%"><col style="width:9%"><col style="width:13%"><col style="width:18%"><col style="width:9%"></colgroup>';
+  const tbody = `<table>${colK}<tbody>${rows}</tbody></table>`;
 
-  $('tk-head').innerHTML = '<table><thead>' + thead + '</thead></table>';
+  const colK = '<colgroup><col style="width:36%"><col style="width:15%"><col style="width:9%"><col style="width:13%"><col style="width:18%"><col style="width:9%"></colgroup>';
+  $('tk-head').innerHTML = '<table>' + colK + '<thead>' + thead + '</thead></table>';
   $('tk').innerHTML = tbody + tbody;
   startScroll('tk',data.length);
 
@@ -479,9 +481,11 @@ function renderI(data){
   }).join('');
 
   const ihead = `<tr><th>Nama / Negara</th><th>Paspor</th><th>ITAS</th><th>SKJ/STM</th><th>SKTT</th></tr>`;
-  const ibody = `<table><tbody>${rows}</tbody></table>`;
+  const colI = '<colgroup><col style="width:28%"><col style="width:18%"><col style="width:18%"><col style="width:18%"><col style="width:18%"></colgroup>';
+  const ibody = `<table>${colI}<tbody>${rows}</tbody></table>`;
 
-  $('ti-head').innerHTML = '<table><thead>' + ihead + '</thead></table>';
+  const colI = '<colgroup><col style="width:28%"><col style="width:18%"><col style="width:18%"><col style="width:18%"><col style="width:18%"></colgroup>';
+  $('ti-head').innerHTML = '<table>' + colI + '<thead>' + ihead + '</thead></table>';
   $('ti').innerHTML = ibody + ibody;
   startScroll('ti',data.length);
 
