@@ -74,8 +74,8 @@ header{
   padding:10px 16px;border-bottom:0.5px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
 }
-.pt{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
-.pt::before{content:'';width:3px;height:11px;background:var(--accent);border-radius:2px;display:inline-block}
+.pt{font-size:15px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.pt::before{content:'';width:3px;height:15px;background:var(--accent);border-radius:2px;display:inline-block}
 .pt.green::before{background:#10b981}
 .pcount{font-size:11px;color:var(--muted);background:var(--surface);padding:2px 8px;border-radius:20px;border:0.5px solid var(--border)}
 
@@ -123,6 +123,12 @@ td{padding:7px 13px;font-size:12px;vertical-align:middle}
 }
 .notif.hide{display:none}
 
+
+/* ── YOUTUBE ── */
+.yt-box{flex-shrink:0;height:150px;border-radius:12px;overflow:hidden;border:0.5px solid var(--border);position:relative;background:#000}
+.yt-box iframe{width:100%;height:100%;border:none;display:block}
+.yt-label{position:absolute;top:7px;left:9px;z-index:3;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6);background:rgba(0,0,0,.55);padding:2px 8px;border-radius:10px;pointer-events:none}
+
 /* ── LOADER ── */
 #loader{
   position:fixed;inset:0;background:var(--bg);
@@ -161,6 +167,10 @@ td{padding:7px 13px;font-size:12px;vertical-align:middle}
       <div class="sc"><div class="sc-icon ic-green">✅</div><div><div class="sc-n g" id="k1">—</div><div class="sc-l">Aktif</div></div></div>
       <div class="sc"><div class="sc-icon ic-yellow">⚠️</div><div><div class="sc-n y" id="k2">—</div><div class="sc-l">Hampir Habis</div></div></div>
       <div class="sc"><div class="sc-icon ic-red">❌</div><div><div class="sc-n r" id="k3">—</div><div class="sc-l">Expired</div></div></div>
+    </div>
+    <div class="yt-box">
+      <div class="yt-label">▶ UINSA</div>
+      <iframe id="yt-frame" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
     </div>
     <div class="panel">
       <div class="ph">
@@ -296,6 +306,25 @@ function startScroll(trackId,count){
   t.classList.add('go');
 }
 
+// ── YOUTUBE HELPER ──
+function extractYtId(url){
+  if(!url)return null;
+  url = url.trim();
+  // youtu.be/ID
+  let m = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if(m)return m[1];
+  // youtube.com/watch?v=ID
+  m = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if(m)return m[1];
+  // youtube.com/embed/ID
+  m = url.match(/embed\/([a-zA-Z0-9_-]{11})/);
+  if(m)return m[1];
+  // playlist
+  m = url.match(/list=([a-zA-Z0-9_-]+)/);
+  if(m)return null; // handled separately below
+  return null;
+}
+
 // ── RENDER KERJASAMA ──
 function renderK(data){
   $('ck').textContent=data.length+' data';
@@ -337,6 +366,18 @@ function renderK(data){
 
   $('tk').innerHTML=tbl+tbl;
   startScroll('tk',data.length);
+
+  // Ambil link YouTube dari kolom J (baris pertama yang ada isinya)
+  const ytLink = data.map(r => get(r,'J','Youtube','YouTube','youtube','Link Youtube','Link YouTube','Video','video')).find(v => v && v.trim());
+  if(ytLink){
+    const ytId = extractYtId(ytLink);
+    if(ytId){
+      $('yt-frame').src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&mute=1&loop=1&playlist=' + ytId + '&controls=0&modestbranding=1&rel=0';
+    } else {
+      // Mungkin langsung embed URL
+      $('yt-frame').src = ytLink;
+    }
+  }
 
   if(warn+exp>0){
     $('nk').classList.remove('hide');
