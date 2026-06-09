@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"/>
+<title>Dashboard International Office UINSA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0b0e18;--surface:#131726;--card:#181c2e;
+  --border:rgba(255,255,255,0.07);--text:#e2e6f3;--muted:#6b7194;--accent:#3b82f6;
+  --green:#22c55e;--gbg:rgba(34,197,94,0.12);
+  --yellow:#eab308;--ybg:rgba(234,179,8,0.13);
+  --red:#ef4444;--rbg:rgba(239,68,68,0.12);
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden}
+
+/* HEADER */
+header{height:56px;display:flex;justify-content:space-between;align-items:center;padding:0 24px;background:var(--surface);border-bottom:0.5px solid var(--border);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#1d4ed8,#60a5fa);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0}
+.logo-title{font-size:14px;font-weight:600}
+.logo-sub{font-size:11px;color:var(--muted);margin-top:1px}
+#clock{font-size:26px;font-weight:300;letter-spacing:.05em}
+#date{font-size:11px;color:var(--muted);text-align:right;line-height:1.9}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:14px 24px;height:calc(100vh - 56px);overflow:hidden}
+.col{display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden}
+
+/* SUMMARY */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex-shrink:0}
+.summary.five{grid-template-columns:repeat(5,1fr)}
+.sc{background:var(--card);border:0.5px solid var(--border);border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:9px}
+.sc-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ic-blue{background:rgba(59,130,246,0.15)}.ic-green{background:var(--gbg)}.ic-yellow{background:var(--ybg)}.ic-red{background:var(--rbg)}.ic-purple{background:rgba(168,85,247,0.15)}
+.sc-n{font-size:20px;font-weight:500;line-height:1}
+.sc-n.g{color:var(--green)}.sc-n.y{color:var(--yellow)}.sc-n.r{color:var(--red)}.sc-n.p{color:#a855f7}
+.sc-l{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* JENIS ROW */
+.jenis-row{display:flex;gap:8px;flex-shrink:0}
+.jc{background:var(--card);border:0.5px solid var(--border);border-radius:10px;padding:8px 14px;display:flex;align-items:center;gap:10px;flex:1}
+.jc-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.jc-n{font-size:20px;font-weight:600;color:var(--text);line-height:1}
+.jc-l{font-size:10px;color:var(--muted);margin-top:2px}
+
+
+/* CHIPS */
+.chips{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.chip{background:var(--surface);border:0.5px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.chip b{color:var(--accent);font-weight:600}
+
+/* PANEL */
+.panel{background:var(--card);border:0.5px solid var(--border);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;flex:1;min-height:0}
+.ph{padding:10px 16px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.pt{font-size:15px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.pt::before{content:'';width:3px;height:15px;background:var(--accent);border-radius:2px;display:inline-block}
+.pt.green::before{background:#10b981}
+.pcount{font-size:11px;color:var(--muted);background:var(--surface);padding:2px 8px;border-radius:20px;border:0.5px solid var(--border)}
+
+/* SCROLL — thead sticky, tbody scroll */
+.scroll-outer{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.tbl-head{flex-shrink:0}
+.tbl-head table{width:100%;border-collapse:collapse;table-layout:fixed}
+.tbl-head th{padding:6px 12px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface);border-bottom:0.5px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbl-body{flex:1;overflow:hidden;position:relative}
+.tbl-body::after{content:'';position:absolute;bottom:0;left:0;right:0;height:24px;pointer-events:none;background:linear-gradient(to top,var(--card),transparent);z-index:2}
+.scroll-track{display:flex;flex-direction:column}
+.scroll-track.go{animation:scrollUp linear infinite}
+.scroll-track:hover{animation-play-state:paused}
+@keyframes scrollUp{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+.scroll-track table{width:100%;border-collapse:collapse;table-layout:fixed}
+.scroll-track td{padding:8px 12px;font-size:12px;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scroll-track tr{border-bottom:0.5px solid rgba(255,255,255,0.04)}
+.scroll-track tr:hover{background:rgba(59,130,246,0.04)}
+
+/* CELL */
+.cm{font-size:12px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cs{font-size:10px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block}
+.bg{background:var(--gbg);color:var(--green)}.bg .dot{background:var(--green)}
+.by{background:var(--ybg);color:var(--yellow)}.by .dot{background:var(--yellow)}
+.br{background:var(--rbg);color:var(--red)}.br .dot{background:var(--red)}
+
+/* DATE */
+.dc{display:flex;flex-direction:column;gap:1px}
+.dv{font-size:11px;font-weight:500}
+.dv.g{color:var(--green)}.dv.y{color:var(--yellow)}.dv.r{color:var(--red)}.dv.m{color:var(--muted)}
+.dd{font-size:10px;color:var(--muted)}
+
+/* NOTIF */
+.notif{flex-shrink:0;background:rgba(234,179,8,0.08);border-top:0.5px solid rgba(234,179,8,0.2);padding:6px 16px;font-size:11px;color:var(--yellow);display:flex;align-items:center;gap:7px}
+.notif.hide{display:none}
+
+/* YOUTUBE BAR BAWAH */
+.yt-bar{position:fixed;bottom:0;left:0;right:0;height:130px;background:var(--surface);border-top:0.5px solid var(--border);display:none;align-items:center;gap:14px;padding:8px 24px;z-index:10}
+.yt-bar.active{display:flex}
+.yt-bar-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);flex-shrink:0}
+.yt-bar-frame{flex:1;height:100%;border-radius:10px;overflow:hidden;background:#000}
+.yt-bar-frame iframe{width:100%;height:100%;border:none;display:block}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:100;transition:opacity .4s}
+.spin{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loader p{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="spin"></div><p>Memuat data…</p></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">IO</div>
+    <div><div class="logo-title">International Office</div><div class="logo-sub">UIN Sunan Ampel Surabaya</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:18px">
+    <div id="date"></div>
+    <div id="clock"></div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- KIRI: KERJASAMA -->
+  <div class="col">
+    <div class="summary">
+      <div class="sc"><div class="sc-icon ic-blue">🤝</div><div><div class="sc-n" id="k0">—</div><div class="sc-l">Total</div></div></div>
+      <div class="sc"><div class="sc-icon ic-green">✅</div><div><div class="sc-n g" id="k1">—</div><div class="sc-l">Aktif</div></div></div>
+      <div class="sc"><div class="sc-icon ic-yellow">⚠️</div><div><div class="sc-n y" id="k2">—</div><div class="sc-l">Hampir Habis</div></div></div>
+      <div class="sc"><div class="sc-icon ic-red">❌</div><div><div class="sc-n r" id="k3">—</div><div class="sc-l">Expired</div></div></div>
+    </div>
+    <div class="jenis-row" id="sum-jenis"></div>
+    <div class="summary" id="sum-jenis"></div>
+    <div class="summary" id="jenis-bar">
+      <!-- diisi JS -->
+    </div>
+    <div class="panel">
+      <div class="ph">
+        <div class="pt">Data Kerjasama</div>
+        <span class="pcount" id="ck">memuat…</span>
+      </div>
+      <div class="scroll-outer">
+        <div class="tbl-head" id="tk-head"></div>
+        <div class="tbl-body"><div class="scroll-track" id="tk"></div></div>
+      </div>
+      <div class="notif hide" id="nk">⚠ <span id="nkt"></span></div>
+    </div>
+  </div>
+
+  <!-- KANAN: IMIGRASI -->
+  <div class="col">
+    <div class="summary five">
+      <div class="sc"><div class="sc-icon ic-blue">👤</div><div><div class="sc-n" id="i0">—</div><div class="sc-l">Total</div></div></div>
+      <div class="sc"><div class="sc-icon ic-purple">🌍</div><div><div class="sc-n p" id="i3">—</div><div class="sc-l">Negara</div></div></div>
+      <div class="sc"><div class="sc-icon ic-green">✅</div><div><div class="sc-n g" id="i4">—</div><div class="sc-l">Aman</div></div></div>
+      <div class="sc"><div class="sc-icon ic-yellow">⚠️</div><div><div class="sc-n y" id="i1">—</div><div class="sc-l">Perhatian</div></div></div>
+      <div class="sc"><div class="sc-icon ic-red">❌</div><div><div class="sc-n r" id="i2">—</div><div class="sc-l">Expired</div></div></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="panel">
+      <div class="ph">
+        <div class="pt green">Mahasiswa Asing & Status Dokumen</div>
+        <span class="pcount" id="ci">memuat…</span>
+      </div>
+      <div class="scroll-outer">
+        <div class="tbl-head" id="ti-head"></div>
+        <div class="tbl-body"><div class="scroll-track" id="ti"></div></div>
+      </div>
+      <div class="notif hide" id="ni">⚠ <span id="nit"></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- YOUTUBE BAR BAWAH -->
+<div class="yt-bar" id="yt-bar">
+  <div class="yt-bar-label">▶ UINSA</div>
+  <div class="yt-bar-frame">
+    <iframe id="yt-frame" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script>
+const URL_K = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsM6DU2fpRNKv1semjXJko8KtS1XEnrOS8qaPS68HppwhcZFWdiKE7a5Jr5_fX4nQjHQpojV1azSyM/pub?gid=0&single=true&output=csv';
+const URL_I = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQeMyDZFY_nIa48_hdRgCzwLvqMpeav2GQQb2IW4q5nS4Y9YIzfQWg-Jjf7_aVt60pKV40Vb3EO48ji/pub?output=csv';
+const WARN  = 60;
+const RFSH  = 5 * 60 * 1000;
+
+// Lebar kolom kerjasama: Kampus|Negara|Jenis|Mulai|Berakhir|Status
+const COL_K = '<colgroup><col style="width:34%"><col style="width:14%"><col style="width:9%"><col style="width:13%"><col style="width:21%"><col style="width:9%"></colgroup>';
+// Lebar kolom imigrasi: Nama|Paspor|ITAS|STM|SKTT
+const COL_I = '<colgroup><col style="width:26%"><col style="width:18.5%"><col style="width:18.5%"><col style="width:18.5%"><col style="width:18.5%"></colgroup>';
+
+const $   = id => document.getElementById(id);
+const BL  = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const BLP = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const HR  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+
+function fmt(d){ return d&&!isNaN(d)?`${d.getDate()} ${BL[d.getMonth()]} ${d.getFullYear()}`:'—' }
+
+function parseTgl(s){
+  if(!s||!String(s).trim())return null;
+  s=String(s).trim();
+  if(/^\d{4,5}$/.test(s)){const d=new Date((+s-25569)*86400000);if(!isNaN(d))return d}
+  let m=s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+  if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);if(!isNaN(d))return d}
+  m=s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if(m){const d=new Date(+m[1],+m[2]-1,+m[3]);if(!isNaN(d))return d}
+  const d=new Date(s);return isNaN(d)?null:d;
+}
+
+function sisa(tgl){
+  if(!tgl)return null;
+  const n=new Date();n.setHours(0,0,0,0);
+  return Math.round((tgl-n)/86400000);
+}
+function kls(h){return h===null?'m':h<0?'r':h<=WARN?'y':'g'}
+
+function tdTgl(str){
+  const d=parseTgl(str),h=sisa(d),k=kls(h);
+  if(!d)return`<td><span style="color:var(--muted);font-size:10px">—</span></td>`;
+  const lbl=h<0?'Expired':h===0?'Hari ini':`${h} hari`;
+  return`<td><div class="dc"><span class="dv ${k}">${fmt(d)}</span><span class="dd">${lbl}</span></div></td>`;
+}
+
+function get(row,...keys){
+  for(const k of keys)if(row[k]!==undefined&&row[k]!=='')return row[k];
+  const kl=keys.map(x=>x.toLowerCase());
+  for(const[rk,rv]of Object.entries(row))
+    if(kl.includes(rk.toLowerCase())&&rv!=='')return rv;
+  return'';
+}
+
+async function fetchCSV(url){
+  const fns=[
+    ()=>fetch(url,{cache:'no-cache'}),
+    ()=>fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url),{cache:'no-cache'}),
+    ()=>fetch('https://corsproxy.io/?'+encodeURIComponent(url),{cache:'no-cache'}),
+  ];
+  for(const fn of fns){
+    try{
+      const r=await fn();
+      if(!r.ok)continue;
+      const t=await r.text();
+      if(t&&t.trim().length>20&&!t.trim().startsWith('<'))return t;
+    }catch(e){}
+  }
+  throw new Error('Fetch gagal. Pastikan spreadsheet sudah di-publish via File → Publish to web.');
+}
+
+function parseCSV(txt){
+  const rows=[];
+  for(const line of txt.trim().split('\n')){
+    const cols=[];let cur='',q=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(c==='"'){q&&line[i+1]==='"'?(cur+='"',i++):q=!q}
+      else if(c===','&&!q){cols.push(cur.trim());cur=''}
+      else cur+=c;
+    }
+    cols.push(cur.trim());rows.push(cols);
+  }
+  return rows;
+}
+
+function toObj(rows){
+  if(rows.length<2)return[];
+  const h=rows[0].map(x=>x.replace(/^"|"$/g,'').trim());
+  return rows.slice(1)
+    .filter(r=>r.some(c=>c.replace(/^"|"$/g,'').trim()))
+    .map(r=>{const o={};h.forEach((k,i)=>o[k]=(r[i]||'').replace(/^"|"$/g,'').trim());return o;});
+}
+
+function startScroll(id,count){
+  const t=$(id);
+  t.style.animationDuration=Math.max(25,count*2.8)+'s';
+  t.classList.add('go');
+}
+
+function extractYtId(url){
+  if(!url)return null;
+  let m=url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);if(m)return m[1];
+  m=url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);if(m)return m[1];
+  m=url.match(/embed\/([a-zA-Z0-9_-]{11})/);if(m)return m[1];
+  return null;
+}
+
+// ── RENDER KERJASAMA ──────────────────────────────
+function renderK(data){
+  $('ck').textContent=data.length+' data';
+  let aktif=0,warn=0,exp=0;
+
+  const rows=data.map(r=>{
+    const kampus=get(r,'Kampus','Kampus / Partner','Perguruan Tinggi','Institusi','Partner');
+    const unit  =get(r,'Unit Fakultas','Unit','Fakultas','Prodi');
+    const negara=get(r,'Negara','Country','Asal Negara');
+    const mulai =get(r,'Mulai','Tanggal Mulai','Tgl Mulai');
+    const akhir =get(r,'Berakhir','Tanggal Berakhir','Masa Berlaku','Akhir');
+    const jenis =get(r,'Jenis','Jenis Kerjasama','Jenis MoU');
+    const link  =get(r,'LINK','Link','URL','Dokumen');
+
+    const h=sisa(parseTgl(akhir)),k=kls(h);
+    if(k==='g')aktif++;else if(k==='y')warn++;else if(k==='r')exp++;
+    const stxt=k==='r'?'Expired':k==='y'?'Hampir Habis':'Aktif';
+    const bkls=k==='g'?'bg':k==='y'?'by':'br';
+    const kCell=link?`<a href="${link}" target="_blank" style="color:var(--text);text-decoration:none">${kampus||'—'}</a>`:(kampus||'—');
+
+    return`<tr>
+      <td><div class="cm">${kCell}</div><div class="cs">${unit}</div></td>
+      <td><div class="cm">${negara}</div></td>
+      <td style="color:#a5b4fc;font-size:11px;font-weight:500">${jenis}</td>
+      <td><div class="dc"><span class="dv m">${fmt(parseTgl(mulai))}</span></div></td>
+      ${tdTgl(akhir)}
+      <td><span class="badge ${bkls}"><span class="dot"></span>${stxt}</span></td>
+    </tr>`;
+  }).join('');
+
+  $('k0').textContent=data.length;$('k1').textContent=aktif;$('k2').textContent=warn;$('k3').textContent=exp;
+
+  // Hitung per jenis (MoU/MoA/LOI/dll)
+  const jenisMap={};
+  data.forEach(r=>{
+    const j=(get(r,'Jenis','Jenis Kerjasama','Jenis MoU')||'Lainnya').trim();
+    const jup=j.toUpperCase();
+    jenisMap[jup]=(jenisMap[jup]||0)+1;
+  });
+  const jColors={'MOU':'#3b82f6','MOA':'#10b981','LOI':'#a855f7','MOU/MOA':'#f59e0b'};
+  const jDef=['#06b6d4','#f97316','#ec4899','#84cc16'];
+  let jci=0;
+  $('sum-jenis').innerHTML=Object.entries(jenisMap)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([j,n])=>{
+      const col=jColors[j]||jDef[jci++%jDef.length];
+      return`<div class="jc"><div class="jc-dot" style="background:${col}"></div><div><div class="jc-n">${n}</div><div class="jc-l">${j}</div></div></div>`;
+    }).join('');
+
+  const thead=`<tr><th>Kampus / Unit</th><th>Negara</th><th>Jenis</th><th>Mulai</th><th>Berakhir</th><th>Status</th></tr>`;
+  $('tk-head').innerHTML=`<table>${COL_K}<thead>${thead}</thead></table>`;
+  $('tk').innerHTML=`<table>${COL_K}<tbody>${rows}</tbody></table><table>${COL_K}<tbody>${rows}</tbody></table>`;
+  startScroll('tk',data.length);
+
+  if(warn+exp>0){$('nk').classList.remove('hide');$('nkt').textContent=`${exp} expired · ${warn} mendekati batas`;}
+
+  // YouTube dari kolom J
+  const ytLink=data.map(r=>get(r,'J','Youtube','YouTube','Link Youtube','Video')).find(v=>v&&v.trim());
+  if(ytLink){
+    const ytId=extractYtId(ytLink);
+    const src=ytId
+      ?`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&modestbranding=1&rel=0`
+      :ytLink;
+    $('yt-frame').src=src;
+    $('yt-bar').classList.add('active');
+  }
+}
+
+// ── RENDER IMIGRASI ──────────────────────────────
+function renderI(data){
+  $('ci').textContent=data.length+' mahasiswa';
+  $('i0').textContent=data.length;
+
+  let warnSet=new Set(),expSet=new Set(),amanSet=new Set(),negMap={};
+
+  data.forEach(r=>{
+    const nama  =get(r,'Nama','Nama Mahasiswa','Name');
+    const negara=get(r,'Negara','Asal Negara','Kewarganegaraan','Country');
+    negMap[negara||'Lainnya']=(negMap[negara||'Lainnya']||0)+1;
+    const vals=[
+      get(r,'Masa Berlaku Paspor','Paspor'),
+      get(r,'Masa Berlaku ITAS','ITAS'),
+      get(r,'Masa Berlaku SKJ/STM','SKJ/STM','STM'),
+      get(r,'Masa Berlaku SKTT','SKTT'),
+    ];
+    let hasExp=false,hasWarn=false;
+    vals.forEach(v=>{
+      const h=sisa(parseTgl(v));
+      if(h!==null&&h<0)hasExp=true;
+      else if(h!==null&&h<=WARN)hasWarn=true;
+    });
+    if(hasExp)expSet.add(nama);else if(hasWarn)warnSet.add(nama);else amanSet.add(nama);
+  });
+
+  $('i1').textContent=warnSet.size;$('i2').textContent=expSet.size;
+  $('i3').textContent=Object.keys(negMap).length;$('i4').textContent=amanSet.size;
+
+  $('chips').innerHTML=Object.entries(negMap).sort((a,b)=>b[1]-a[1])
+    .map(([n,c])=>`<div class="chip">${n} <b>${c}</b></div>`).join('');
+
+  const rows=data.map(r=>{
+    const nama  =get(r,'Nama','Nama Mahasiswa','Name');
+    const negara=get(r,'Negara','Asal Negara','Kewarganegaraan','Country');
+    const paspor=get(r,'Masa Berlaku Paspor','Paspor');
+    const itas  =get(r,'Masa Berlaku ITAS','ITAS');
+    const stm   =get(r,'Masa Berlaku SKJ/STM','SKJ/STM','STM');
+    const sktt  =get(r,'Masa Berlaku SKTT','SKTT');
+    const allH  =[paspor,itas,stm,sktt].map(v=>sisa(parseTgl(v)));
+    const rowStyle=allH.some(h=>h!==null&&h<0)?'background:rgba(239,68,68,0.05)'
+      :allH.some(h=>h!==null&&h>=0&&h<=WARN)?'background:rgba(234,179,8,0.05)':'';
+    return`<tr style="${rowStyle}">
+      <td><div class="cm">${nama||'—'}</div><div class="cs">${negara}</div></td>
+      ${tdTgl(paspor)}${tdTgl(itas)}${tdTgl(stm)}${tdTgl(sktt)}
+    </tr>`;
+  }).join('');
+
+  const ihead=`<tr><th>Nama / Negara</th><th>Paspor</th><th>ITAS</th><th>SKJ/STM</th><th>SKTT</th></tr>`;
+  $('ti-head').innerHTML=`<table>${COL_I}<thead>${ihead}</thead></table>`;
+  $('ti').innerHTML=`<table>${COL_I}<tbody>${rows}</tbody></table><table>${COL_I}<tbody>${rows}</tbody></table>`;
+  startScroll('ti',data.length);
+
+  if(expSet.size+warnSet.size>0){
+    $('ni').classList.remove('hide');
+    $('nit').textContent=`${expSet.size} dokumen expired · ${warnSet.size} mendekati batas`;
+  }
+}
+
+// ── CLOCK ──
+function tick(){
+  const n=new Date();
+  $('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
+  $('date').innerHTML=`${HR[n.getDay()]}, ${n.getDate()} ${BLP[n.getMonth()]} ${n.getFullYear()}`;
+}
+setInterval(tick,1000);tick();
+
+// ── MAIN ──
+async function load(){
+  try{
+    const[tK,tI]=await Promise.all([fetchCSV(URL_K),fetchCSV(URL_I)]);
+    renderK(toObj(parseCSV(tK)));
+    renderI(toObj(parseCSV(tI)));
+    const l=$('loader');l.style.opacity='0';setTimeout(()=>l.style.display='none',400);
+    setTimeout(load,RFSH);
+  }catch(e){
+    $('loader').innerHTML=`
+      <div style="text-align:center;max-width:460px;padding:28px">
+        <div style="font-size:30px;margin-bottom:12px">⚠</div>
+        <div style="font-size:15px;color:#ef4444;margin-bottom:12px">Gagal memuat data</div>
+        <div style="font-size:12px;color:#6b7194;background:#131726;border-radius:10px;padding:16px;text-align:left;line-height:2">
+          ${e.message}
+        </div>
+        <button onclick="load()" style="margin-top:18px;padding:9px 24px;background:#3b82f6;color:#fff;border:none;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600">↺ Coba Lagi</button>
+      </div>`;
+    $('loader').style.display='flex';$('loader').style.opacity='1';
+  }
+}
+load();
+</script>
+</body>
+</html>
