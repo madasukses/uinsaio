@@ -84,12 +84,21 @@ header{
 .pcount{font-size:11px;color:var(--muted);background:var(--surface);padding:2px 8px;border-radius:20px;border:0.5px solid var(--border)}
 
 /* ── SCROLL ── */
-.scroll-outer{flex:1;overflow:hidden;position:relative;min-height:0}
-.scroll-outer::before,.scroll-outer::after{
-  content:'';position:absolute;left:0;right:0;height:20px;z-index:2;pointer-events:none;
+.scroll-outer{flex:1;overflow:hidden;position:relative;min-height:0;display:flex;flex-direction:column}
+.scroll-outer::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:24px;z-index:2;pointer-events:none;
+  background:linear-gradient(to top,var(--card),transparent);
 }
-.scroll-outer::before{top:0;background:linear-gradient(to bottom,var(--card),transparent)}
-.scroll-outer::after{bottom:0;background:linear-gradient(to top,var(--card),transparent)}
+/* Header tabel sticky */
+.tbl-head{flex-shrink:0;z-index:4;position:relative}
+.tbl-head table{width:100%;border-collapse:collapse}
+.tbl-head thead th{
+  padding:6px 13px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);background:var(--surface);border-bottom:0.5px solid var(--border);
+  white-space:nowrap;text-align:left;
+}
+/* Body scroll */
+.tbl-body{flex:1;overflow:hidden;position:relative}
 .scroll-track{display:flex;flex-direction:column}
 .scroll-track.go{animation:scrollUp linear infinite}
 .scroll-track:hover{animation-play-state:paused}
@@ -97,11 +106,7 @@ header{
 
 /* ── TABLE ── */
 table{width:100%;border-collapse:collapse}
-thead th{
-  padding:6px 13px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--muted);background:var(--surface);border-bottom:0.5px solid var(--border);white-space:nowrap;text-align:left;
-  position:sticky;top:0;z-index:3;
-}
+/* thead th handled in .tbl-head */
 tbody tr{border-bottom:0.5px solid rgba(255,255,255,0.04)}
 tbody tr:hover{background:rgba(59,130,246,0.04)}
 td{padding:7px 13px;font-size:12px;vertical-align:middle}
@@ -129,10 +134,16 @@ td{padding:7px 13px;font-size:12px;vertical-align:middle}
 .notif.hide{display:none}
 
 
-/* ── YOUTUBE ── */
-.yt-box{flex-shrink:0;height:150px;border-radius:12px;overflow:hidden;border:0.5px solid var(--border);position:relative;background:#000}
-.yt-box iframe{width:100%;height:100%;border:none;display:block}
-.yt-label{position:absolute;top:7px;left:9px;z-index:3;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6);background:rgba(0,0,0,.55);padding:2px 8px;border-radius:10px;pointer-events:none}
+/* ── YOUTUBE BAR BAWAH ── */
+.yt-bar{
+  position:fixed;bottom:0;left:0;right:0;height:130px;
+  background:var(--surface);border-top:0.5px solid var(--border);
+  display:none;align-items:center;gap:14px;padding:8px 24px;z-index:10;
+}
+.yt-bar.active{display:flex}
+.yt-bar-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);flex-shrink:0}
+.yt-bar-frame{flex:1;height:100%;border-radius:10px;overflow:hidden;background:#000}
+.yt-bar-frame iframe{width:100%;height:100%;border:none;display:block}
 
 /* ── LOADER ── */
 #loader{
@@ -173,17 +184,14 @@ td{padding:7px 13px;font-size:12px;vertical-align:middle}
       <div class="sc"><div class="sc-icon ic-yellow">⚠️</div><div><div class="sc-n y" id="k2">—</div><div class="sc-l">Hampir Habis</div></div></div>
       <div class="sc"><div class="sc-icon ic-red">❌</div><div><div class="sc-n r" id="k3">—</div><div class="sc-l">Expired</div></div></div>
     </div>
-    <div class="yt-box">
-      <div class="yt-label">▶ UINSA</div>
-      <iframe id="yt-frame" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
-    </div>
     <div class="panel">
       <div class="ph">
         <div class="pt">Data Kerjasama</div>
         <span class="pcount" id="ck">memuat…</span>
       </div>
       <div class="scroll-outer">
-        <div class="scroll-track" id="tk"></div>
+        <div class="tbl-head" id="tk-head"></div>
+        <div class="tbl-body"><div class="scroll-track" id="tk"></div></div>
       </div>
       <div class="notif hide" id="nk">⚠ <span id="nkt"></span></div>
     </div>
@@ -205,12 +213,21 @@ td{padding:7px 13px;font-size:12px;vertical-align:middle}
         <span class="pcount" id="ci">memuat…</span>
       </div>
       <div class="scroll-outer">
-        <div class="scroll-track" id="ti"></div>
+        <div class="tbl-head" id="ti-head"></div>
+        <div class="tbl-body"><div class="scroll-track" id="ti"></div></div>
       </div>
       <div class="notif hide" id="ni">⚠ <span id="nit"></span></div>
     </div>
   </div>
 
+</div>
+
+<!-- YOUTUBE BAR BAWAH -->
+<div class="yt-bar">
+  <div class="yt-bar-label">▶ UINSA</div>
+  <div class="yt-bar-frame">
+    <iframe id="yt-frame" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
+  </div>
 </div>
 
 <script>
@@ -311,6 +328,20 @@ function startScroll(trackId,count){
   t.classList.add('go');
 }
 
+function buildTable(headHtml, rowsHtml, outerSelector, trackId, count){
+  // Pisah thead ke .tbl-head, tbody ke .scroll-track
+  const outer = document.querySelector(outerSelector);
+  // head
+  const headDiv = outer.querySelector('.tbl-head');
+  headDiv.innerHTML = '<table><thead>' + headHtml + '</thead></table>';
+  // body scroll
+  const bodyDiv = outer.querySelector('.tbl-body');
+  const bodyTbl = '<table><tbody>' + rowsHtml + '</tbody></table>';
+  const track = bodyDiv.querySelector('.scroll-track');
+  track.innerHTML = bodyTbl + bodyTbl;
+  startScroll(trackId, count);
+}
+
 // ── YOUTUBE HELPER ──
 function extractYtId(url){
   if(!url)return null;
@@ -365,11 +396,11 @@ function renderK(data){
   $('k2').textContent=warn;
   $('k3').textContent=exp;
 
-  const tbl=`<table><thead><tr>
-    <th>Kampus / Unit</th><th>Negara</th><th>Jenis</th><th>Mulai</th><th>Berakhir</th><th>Status</th>
-  </tr></thead><tbody>${rows}</tbody></table>`;
+  const thead = `<tr><th>Kampus / Unit</th><th>Negara</th><th>Jenis</th><th>Mulai</th><th>Berakhir</th><th>Status</th></tr>`;
+  const tbody = `<table><tbody>${rows}</tbody></table>`;
 
-  $('tk').innerHTML=tbl+tbl;
+  $('tk-head').innerHTML = '<table><thead>' + thead + '</thead></table>';
+  $('tk').innerHTML = tbody + tbody;
   startScroll('tk',data.length);
 
   // Ambil link YouTube dari kolom J (baris pertama yang ada isinya)
@@ -379,9 +410,9 @@ function renderK(data){
     if(ytId){
       $('yt-frame').src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&mute=1&loop=1&playlist=' + ytId + '&controls=0&modestbranding=1&rel=0';
     } else {
-      // Mungkin langsung embed URL
       $('yt-frame').src = ytLink;
     }
+    document.querySelector('.yt-bar').classList.add('active');
   }
 
   if(warn+exp>0){
@@ -447,11 +478,11 @@ function renderI(data){
     </tr>`;
   }).join('');
 
-  const tbl=`<table><thead><tr>
-    <th>Nama / Negara</th><th>Paspor</th><th>ITAS</th><th>SKJ/STM</th><th>SKTT</th>
-  </tr></thead><tbody>${rows}</tbody></table>`;
+  const ihead = `<tr><th>Nama / Negara</th><th>Paspor</th><th>ITAS</th><th>SKJ/STM</th><th>SKTT</th></tr>`;
+  const ibody = `<table><tbody>${rows}</tbody></table>`;
 
-  $('ti').innerHTML=tbl+tbl;
+  $('ti-head').innerHTML = '<table><thead>' + ihead + '</thead></table>';
+  $('ti').innerHTML = ibody + ibody;
   startScroll('ti',data.length);
 
   if(expSet.size+warnSet.size>0){
