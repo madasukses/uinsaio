@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard International Office UINSA</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<!-- v3 -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0b0e18;--surface:#131726;--card:#181c2e;
+  --border:rgba(255,255,255,0.07);--text:#e2e6f3;--muted:#6b7194;--accent:#3b82f6;
+  --green:#22c55e;--gbg:rgba(34,197,94,0.12);
+  --yellow:#eab308;--ybg:rgba(234,179,8,0.13);
+  --red:#ef4444;--rbg:rgba(239,68,68,0.12);
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden}
+
+/* ── HEADER ── */
+header{
+  height:56px;display:flex;justify-content:space-between;align-items:center;
+  padding:0 24px;background:var(--surface);border-bottom:0.5px solid var(--border);flex-shrink:0;
+}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-icon{
+  width:32px;height:32px;background:linear-gradient(135deg,#1d4ed8,#60a5fa);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:#fff;flex-shrink:0;
+}
+.logo-title{font-size:14px;font-weight:600}
+.logo-sub{font-size:11px;color:var(--muted);margin-top:1px}
+#clock{font-size:26px;font-weight:300;letter-spacing:.05em}
+#date{font-size:11px;color:var(--muted);text-align:right;line-height:1.9}
+
+/* ── LAYOUT ── */
+.layout{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+  padding:14px 24px;height:calc(100vh - 56px);overflow:hidden;
+}
+
+/* ── KOLOM ── */
+.col{display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden}
+
+/* ── SUMMARY CARDS ── */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;flex-shrink:0}
+.summary.five{grid-template-columns:repeat(5,1fr)}
+.sc{
+  background:var(--card);border:0.5px solid var(--border);border-radius:10px;
+  padding:9px 12px;display:flex;align-items:center;gap:9px;
+}
+.sc-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.ic-blue{background:rgba(59,130,246,0.15)}
+.ic-green{background:var(--gbg)}
+.ic-yellow{background:var(--ybg)}
+.ic-red{background:var(--rbg)}
+.ic-purple{background:rgba(168,85,247,0.15)}
+.sc-n{font-size:20px;font-weight:500;line-height:1}
+.sc-n.g{color:var(--green)}.sc-n.y{color:var(--yellow)}.sc-n.r{color:var(--red)}.sc-n.p{color:#a855f7}
+.sc-l{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* ── CHIPS ── */
+.chips{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.chip{
+  background:var(--surface);border:0.5px solid var(--border);border-radius:20px;
+  padding:3px 10px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;
+}
+.chip b{color:var(--accent);font-weight:600}
+
+/* ── PANEL ── */
+.panel{
+  background:var(--card);border:0.5px solid var(--border);border-radius:12px;
+  display:flex;flex-direction:column;overflow:hidden;flex:1;min-height:0;
+}
+.ph{
+  padding:10px 16px;border-bottom:0.5px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.pt{font-size:15px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.pt::before{content:'';width:3px;height:15px;background:var(--accent);border-radius:2px;display:inline-block}
+.pt.green::before{background:#10b981}
+.pcount{font-size:11px;color:var(--muted);background:var(--surface);padding:2px 8px;border-radius:20px;border:0.5px solid var(--border)}
+
+/* ── SCROLL ── */
+.scroll-outer{flex:1;overflow:hidden;position:relative;min-height:0}
+.scroll-outer::before,.scroll-outer::after{
+  content:'';position:absolute;left:0;right:0;height:20px;z-index:2;pointer-events:none;
+}
+.scroll-outer::before{top:0;background:linear-gradient(to bottom,var(--card),transparent)}
+.scroll-outer::after{bottom:0;background:linear-gradient(to top,var(--card),transparent)}
+.scroll-track{display:flex;flex-direction:column}
+.scroll-track.go{animation:scrollUp linear infinite}
+.scroll-track:hover{animation-play-state:paused}
+@keyframes scrollUp{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse}
+thead th{
+  padding:6px 13px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);background:var(--surface);border-bottom:0.5px solid var(--border);white-space:nowrap;text-align:left;
+  position:sticky;top:0;z-index:3;
+}
+tbody tr{border-bottom:0.5px solid rgba(255,255,255,0.04)}
+tbody tr:hover{background:rgba(59,130,246,0.04)}
+td{padding:7px 13px;font-size:12px;vertical-align:middle}
+.cm{font-size:12px;font-weight:500;color:var(--text)}
+.cs{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.dot{width:5px;height:5px;border-radius:50%;display:inline-block}
+.bg{background:var(--gbg);color:var(--green)}.bg .dot{background:var(--green)}
+.by{background:var(--ybg);color:var(--yellow)}.by .dot{background:var(--yellow)}
+.br{background:var(--rbg);color:var(--red)}.br .dot{background:var(--red)}
+
+/* ── DATE CELL ── */
+.dc{display:flex;flex-direction:column;gap:1px}
+.dv{font-size:11px;font-weight:500}
+.dv.g{color:var(--green)}.dv.y{color:var(--yellow)}.dv.r{color:var(--red)}.dv.m{color:var(--muted)}
+.dd{font-size:10px;color:var(--muted)}
+
+/* ── NOTIF ── */
+.notif{
+  flex-shrink:0;background:rgba(234,179,8,0.08);border-top:0.5px solid rgba(234,179,8,0.2);
+  padding:6px 16px;font-size:11px;color:var(--yellow);display:flex;align-items:center;gap:7px;
+}
+.notif.hide{display:none}
+
+
+/* ── YOUTUBE ── */
+.yt-box{flex-shrink:0;height:150px;border-radius:12px;overflow:hidden;border:0.5px solid var(--border);position:relative;background:#000}
+.yt-box iframe{width:100%;height:100%;border:none;display:block}
+.yt-label{position:absolute;top:7px;left:9px;z-index:3;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6);background:rgba(0,0,0,.55);padding:2px 8px;border-radius:10px;pointer-events:none}
+
+/* ── LOADER ── */
+#loader{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;
+  z-index:100;transition:opacity .4s;
+}
+.spin{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loader p{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="spin"></div><p>Memuat data…</p></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">IO</div>
+    <div>
+      <div class="logo-title">International Office</div>
+      <div class="logo-sub">UIN Sunan Ampel Surabaya</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:18px">
+    <div id="date"></div>
+    <div id="clock"></div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ── KIRI: KERJASAMA ── -->
+  <div class="col">
+    <div class="summary" id="sum-k">
+      <div class="sc"><div class="sc-icon ic-blue">🤝</div><div><div class="sc-n" id="k0">—</div><div class="sc-l">Total</div></div></div>
+      <div class="sc"><div class="sc-icon ic-green">✅</div><div><div class="sc-n g" id="k1">—</div><div class="sc-l">Aktif</div></div></div>
+      <div class="sc"><div class="sc-icon ic-yellow">⚠️</div><div><div class="sc-n y" id="k2">—</div><div class="sc-l">Hampir Habis</div></div></div>
+      <div class="sc"><div class="sc-icon ic-red">❌</div><div><div class="sc-n r" id="k3">—</div><div class="sc-l">Expired</div></div></div>
+    </div>
+    <div class="yt-box">
+      <div class="yt-label">▶ UINSA</div>
+      <iframe id="yt-frame" allow="autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="panel">
+      <div class="ph">
+        <div class="pt">Data Kerjasama</div>
+        <span class="pcount" id="ck">memuat…</span>
+      </div>
+      <div class="scroll-outer">
+        <div class="scroll-track" id="tk"></div>
+      </div>
+      <div class="notif hide" id="nk">⚠ <span id="nkt"></span></div>
+    </div>
+  </div>
+
+  <!-- ── KANAN: IMIGRASI ── -->
+  <div class="col">
+    <div class="summary five">
+      <div class="sc"><div class="sc-icon ic-blue">👤</div><div><div class="sc-n" id="i0">—</div><div class="sc-l">Total</div></div></div>
+      <div class="sc"><div class="sc-icon ic-purple">🌍</div><div><div class="sc-n p" id="i3">—</div><div class="sc-l">Negara</div></div></div>
+      <div class="sc"><div class="sc-icon ic-green">✅</div><div><div class="sc-n g" id="i4">—</div><div class="sc-l">Aman</div></div></div>
+      <div class="sc"><div class="sc-icon ic-yellow">⚠️</div><div><div class="sc-n y" id="i1">—</div><div class="sc-l">Perhatian</div></div></div>
+      <div class="sc"><div class="sc-icon ic-red">❌</div><div><div class="sc-n r" id="i2">—</div><div class="sc-l">Expired</div></div></div>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="panel">
+      <div class="ph">
+        <div class="pt green">Mahasiswa Asing & Status Dokumen</div>
+        <span class="pcount" id="ci">memuat…</span>
+      </div>
+      <div class="scroll-outer">
+        <div class="scroll-track" id="ti"></div>
+      </div>
+      <div class="notif hide" id="ni">⚠ <span id="nit"></span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════
+//  URL CSV — sudah publish
+// ════════════════════════════════════════
+const URL_K = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTsM6DU2fpRNKv1semjXJko8KtS1XEnrOS8qaPS68HppwhcZFWdiKE7a5Jr5_fX4nQjHQpojV1azSyM/pub?gid=0&single=true&output=csv';
+const URL_I = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQeMyDZFY_nIa48_hdRgCzwLvqMpeav2GQQb2IW4q5nS4Y9YIzfQWg-Jjf7_aVt60pKV40Vb3EO48ji/pub?gid=0&single=true&output=csv';
+const WARN  = 60;   // hari sebelum expired → kuning
+const RFSH  = 5;    // refresh tiap X menit
+
+// ════════════════════════════════════════
+const $   = id => document.getElementById(id);
+const BL  = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const BLP = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const HR  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+
+function fmt(d){ return d&&!isNaN(d)?`${d.getDate()} ${BL[d.getMonth()]} ${d.getFullYear()}`:'—' }
+
+function parseTgl(s){
+  if(!s||!String(s).trim())return null;
+  s=String(s).trim();
+  if(/^\d{4,5}$/.test(s)){const d=new Date((+s-25569)*86400000);if(!isNaN(d))return d}
+  let m=s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+  if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);if(!isNaN(d))return d}
+  m=s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if(m){const d=new Date(+m[1],+m[2]-1,+m[3]);if(!isNaN(d))return d}
+  const d=new Date(s);return isNaN(d)?null:d;
+}
+
+function sisa(tgl){
+  if(!tgl)return null;
+  const n=new Date();n.setHours(0,0,0,0);
+  return Math.round((tgl-n)/86400000);
+}
+function kls(h){return h===null?'m':h<0?'r':h<=WARN?'y':'g'}
+
+function tdTgl(str){
+  const d=parseTgl(str),h=sisa(d),k=kls(h);
+  if(!d)return`<td><span style="color:var(--muted);font-size:10px">—</span></td>`;
+  const lbl=h<0?'Expired':h===0?'Hari ini':`${h} hari`;
+  return`<td><div class="dc"><span class="dv ${k}">${fmt(d)}</span><span class="dd">${lbl}</span></div></td>`;
+}
+
+function get(row,...keys){
+  for(const k of keys)if(row[k]!==undefined&&row[k]!=='')return row[k];
+  const kl=keys.map(x=>x.toLowerCase());
+  for(const[rk,rv]of Object.entries(row))
+    if(kl.includes(rk.toLowerCase())&&rv!=='')return rv;
+  return'';
+}
+
+// ── FETCH dengan 3 fallback ──
+async function fetchCSV(url){
+  const fns=[
+    ()=>fetch(url,{cache:'no-cache'}),
+    ()=>fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url),{cache:'no-cache'}),
+    ()=>fetch('https://corsproxy.io/?'+encodeURIComponent(url),{cache:'no-cache'}),
+  ];
+  for(const fn of fns){
+    try{
+      const r=await fn();
+      if(!r.ok)continue;
+      const t=await r.text();
+      if(t&&t.trim().length>20&&!t.trim().startsWith('<'))return t;
+    }catch(e){}
+  }
+  throw new Error('Fetch gagal (3 metode). Cek: spreadsheet sudah di-publish?');
+}
+
+function parseCSV(txt){
+  const rows=[];
+  for(const line of txt.trim().split('\n')){
+    const cols=[];let cur='',q=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(c==='"'){q&&line[i+1]==='"'?(cur+='"',i++):q=!q}
+      else if(c===','&&!q){cols.push(cur.trim());cur=''}
+      else cur+=c;
+    }
+    cols.push(cur.trim());rows.push(cols);
+  }
+  return rows;
+}
+
+function toObj(rows){
+  if(rows.length<2)return[];
+  const h=rows[0].map(x=>x.replace(/^"|"$/g,'').trim());
+  return rows.slice(1)
+    .filter(r=>r.some(c=>c.replace(/^"|"$/g,'').trim()))
+    .map(r=>{const o={};h.forEach((k,i)=>o[k]=(r[i]||'').replace(/^"|"$/g,'').trim());return o;});
+}
+
+function startScroll(trackId,count){
+  const t=$(trackId);
+  const dur=Math.max(25,count*2.8);
+  t.style.animationDuration=dur+'s';
+  t.classList.add('go');
+}
+
+// ── YOUTUBE HELPER ──
+function extractYtId(url){
+  if(!url)return null;
+  url = url.trim();
+  // youtu.be/ID
+  let m = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if(m)return m[1];
+  // youtube.com/watch?v=ID
+  m = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if(m)return m[1];
+  // youtube.com/embed/ID
+  m = url.match(/embed\/([a-zA-Z0-9_-]{11})/);
+  if(m)return m[1];
+  // playlist
+  m = url.match(/list=([a-zA-Z0-9_-]+)/);
+  if(m)return null; // handled separately below
+  return null;
+}
+
+// ── RENDER KERJASAMA ──
+function renderK(data){
+  $('ck').textContent=data.length+' data';
+  let aktif=0,warn=0,exp=0;
+
+  const rows=data.map(r=>{
+    const kampus=get(r,'Kampus','Kampus / Partner','Perguruan Tinggi','Institusi','Partner','Nama Institusi');
+    const unit  =get(r,'Unit Fakultas','Unit','Fakultas','Program Studi','Prodi');
+    const negara=get(r,'Negara','Country','Asal Negara');
+    const mulai =get(r,'Mulai','Tanggal Mulai','Tgl Mulai','Mulai Berlaku');
+    const akhir =get(r,'Berakhir','Tanggal Berakhir','Masa Berlaku','Akhir','Tgl Berakhir','Expired');
+    const jenis =get(r,'Jenis','Jenis Kerjasama','Jenis MoU','Type');
+    const link  =get(r,'LINK','Link','URL','Dokumen');
+
+    const h=sisa(parseTgl(akhir)),k=kls(h);
+    if(k==='g')aktif++; else if(k==='y')warn++; else if(k==='r')exp++;
+    const stxt=k==='r'?'Expired':k==='y'?'Hampir Habis':'Aktif';
+    const bkls=k==='g'?'bg':k==='y'?'by':'br';
+    const kCell=link?`<a href="${link}" target="_blank" style="color:var(--text);text-decoration:none">${kampus||'—'}</a>`:(kampus||'—');
+
+    return`<tr>
+      <td><div class="cm">${kCell}</div><div class="cs">${unit}</div></td>
+      <td><div class="cm">${negara}</div></td>
+      <td style="color:#a5b4fc;font-size:11px;font-weight:500">${jenis}</td>
+      <td><div class="dc"><span class="dv m">${fmt(parseTgl(mulai))}</span></div></td>
+      ${tdTgl(akhir)}
+      <td><span class="badge ${bkls}"><span class="dot"></span>${stxt}</span></td>
+    </tr>`;
+  }).join('');
+
+  $('k0').textContent=data.length;
+  $('k1').textContent=aktif;
+  $('k2').textContent=warn;
+  $('k3').textContent=exp;
+
+  const tbl=`<table><thead><tr>
+    <th>Kampus / Unit</th><th>Negara</th><th>Jenis</th><th>Mulai</th><th>Berakhir</th><th>Status</th>
+  </tr></thead><tbody>${rows}</tbody></table>`;
+
+  $('tk').innerHTML=tbl+tbl;
+  startScroll('tk',data.length);
+
+  // Ambil link YouTube dari kolom J (baris pertama yang ada isinya)
+  const ytLink = data.map(r => get(r,'J','Youtube','YouTube','youtube','Link Youtube','Link YouTube','Video','video')).find(v => v && v.trim());
+  if(ytLink){
+    const ytId = extractYtId(ytLink);
+    if(ytId){
+      $('yt-frame').src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&mute=1&loop=1&playlist=' + ytId + '&controls=0&modestbranding=1&rel=0';
+    } else {
+      // Mungkin langsung embed URL
+      $('yt-frame').src = ytLink;
+    }
+  }
+
+  if(warn+exp>0){
+    $('nk').classList.remove('hide');
+    $('nkt').textContent=`${exp} kerjasama expired · ${warn} mendekati batas masa berlaku`;
+  }
+}
+
+// ── RENDER IMIGRASI ──
+function renderI(data){
+  $('ci').textContent=data.length+' mahasiswa';
+  $('i0').textContent=data.length;
+
+  let warnSet=new Set(),expSet=new Set(),amanSet=new Set(),negMap={};
+
+  data.forEach(r=>{
+    const nama  =get(r,'Nama','Nama Mahasiswa','Name');
+    const negara=get(r,'Negara','Asal Negara','Kewarganegaraan','Country','Nationality');
+    negMap[negara||'Lainnya']=(negMap[negara||'Lainnya']||0)+1;
+
+    const vals=[
+      get(r,'Masa Berlaku Paspor','Paspor','Expired Paspor'),
+      get(r,'Masa Berlaku ITAS','ITAS','Expired ITAS'),
+      get(r,'Masa Berlaku SKJ/STM','SKJ/STM','STM','SKJ'),
+      get(r,'Masa Berlaku SKTT','SKTT'),
+    ];
+    let hasExp=false,hasWarn=false;
+    vals.forEach(v=>{
+      const h=sisa(parseTgl(v));
+      if(h!==null&&h<0)hasExp=true;
+      else if(h!==null&&h<=WARN)hasWarn=true;
+    });
+    if(hasExp)expSet.add(nama);
+    else if(hasWarn)warnSet.add(nama);
+    else amanSet.add(nama);
+  });
+
+  $('i1').textContent=warnSet.size;
+  $('i2').textContent=expSet.size;
+  $('i3').textContent=Object.keys(negMap).length;
+  $('i4').textContent=amanSet.size;
+
+  $('chips').innerHTML=Object.entries(negMap).sort((a,b)=>b[1]-a[1])
+    .map(([n,c])=>`<div class="chip">${n} <b>${c}</b></div>`).join('');
+
+  const rows=data.map(r=>{
+    const nama  =get(r,'Nama','Nama Mahasiswa','Name');
+    const negara=get(r,'Negara','Asal Negara','Kewarganegaraan','Country','Nationality');
+    const paspor=get(r,'Masa Berlaku Paspor','Paspor','Expired Paspor');
+    const itas  =get(r,'Masa Berlaku ITAS','ITAS','Expired ITAS');
+    const stm   =get(r,'Masa Berlaku SKJ/STM','SKJ/STM','STM','SKJ');
+    const sktt  =get(r,'Masa Berlaku SKTT','SKTT');
+
+    const allH=[paspor,itas,stm,sktt].map(v=>sisa(parseTgl(v)));
+    const rowStyle=allH.some(h=>h!==null&&h<0)
+      ?'background:rgba(239,68,68,0.04)'
+      :allH.some(h=>h!==null&&h>=0&&h<=WARN)
+        ?'background:rgba(234,179,8,0.04)':'';
+
+    return`<tr style="${rowStyle}">
+      <td><div class="cm">${nama||'—'}</div><div class="cs">${negara}</div></td>
+      ${tdTgl(paspor)}${tdTgl(itas)}${tdTgl(stm)}${tdTgl(sktt)}
+    </tr>`;
+  }).join('');
+
+  const tbl=`<table><thead><tr>
+    <th>Nama / Negara</th><th>Paspor</th><th>ITAS</th><th>SKJ/STM</th><th>SKTT</th>
+  </tr></thead><tbody>${rows}</tbody></table>`;
+
+  $('ti').innerHTML=tbl+tbl;
+  startScroll('ti',data.length);
+
+  if(expSet.size+warnSet.size>0){
+    $('ni').classList.remove('hide');
+    $('nit').textContent=`${expSet.size} dokumen expired · ${warnSet.size} mahasiswa mendekati batas`;
+  }
+}
+
+// ── CLOCK ──
+function tick(){
+  const n=new Date();
+  $('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');
+  $('date').innerHTML=`${HR[n.getDay()]}, ${n.getDate()} ${BLP[n.getMonth()]} ${n.getFullYear()}`;
+}
+setInterval(tick,1000);tick();
+
+// ── MAIN ──
+async function load(){
+  try{
+    const [tK,tI]=await Promise.all([fetchCSV(URL_K),fetchCSV(URL_I)]);
+    renderK(toObj(parseCSV(tK)));
+    renderI(toObj(parseCSV(tI)));
+    const l=$('loader');
+    l.style.opacity='0';
+    setTimeout(()=>l.style.display='none',400);
+    setTimeout(load,RFSH*60*1000);
+  }catch(e){
+    $('loader').innerHTML=`
+      <div style="text-align:center;max-width:460px;padding:28px">
+        <div style="font-size:30px;margin-bottom:12px">⚠</div>
+        <div style="font-size:15px;color:#ef4444;margin-bottom:12px">Gagal memuat data</div>
+        <div style="font-size:12px;color:#6b7194;background:#131726;border-radius:10px;padding:16px;text-align:left;line-height:2.1">
+          <b style="color:#e2e6f3">Error:</b> ${e.message}<br><br>
+          <b style="color:#e2e6f3">Pastikan kedua spreadsheet sudah di-publish:</b><br>
+          File → Share → <b style="color:#60a5fa">Publish to web</b><br>
+          Pilih <b style="color:#60a5fa">Entire Document → CSV → Publish</b>
+        </div>
+        <button onclick="load()" style="margin-top:18px;padding:9px 24px;background:#3b82f6;color:#fff;border:none;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600">↺ Coba Lagi</button>
+      </div>`;
+    $('loader').style.display='flex';
+    $('loader').style.opacity='1';
+  }
+}
+load();
+</script>
+</body>
+</html>
