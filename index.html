@@ -6,299 +6,109 @@
   <title>Dashboard — International Office UINSA</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     :root {
-      --bg:       #0b0e18;
-      --surface:  #131726;
-      --card:     #181c2e;
-      --border:   rgba(255,255,255,0.07);
-      --text:     #e2e6f3;
-      --muted:    #6b7194;
-      --accent:   #3b82f6;
-      --green:    #22c55e;
-      --green-bg: rgba(34,197,94,0.12);
-      --yellow:   #eab308;
-      --yellow-bg:rgba(234,179,8,0.12);
-      --red:      #ef4444;
-      --red-bg:   rgba(239,68,68,0.12);
-      --scroll-speed: 30s;
+      --bg:        #0b0e18;
+      --surface:   #131726;
+      --card:      #181c2e;
+      --border:    rgba(255,255,255,0.07);
+      --text:      #e2e6f3;
+      --muted:     #6b7194;
+      --accent:    #3b82f6;
+      --green:     #22c55e;
+      --green-bg:  rgba(34,197,94,0.12);
+      --yellow:    #eab308;
+      --yellow-bg: rgba(234,179,8,0.12);
+      --red:       #ef4444;
+      --red-bg:    rgba(239,68,68,0.12);
     }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; }
 
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      overflow: hidden;
-    }
+    /* HEADER */
+    header { display:flex; justify-content:space-between; align-items:center; padding:12px 24px; border-bottom:0.5px solid var(--border); background:var(--surface); flex-shrink:0; height:60px; }
+    .header-left { display:flex; align-items:center; gap:12px; }
+    .logo-mark { width:34px; height:34px; background:linear-gradient(135deg,#1d4ed8,#3b82f6); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; flex-shrink:0; }
+    .logo-text { font-size:14px; font-weight:600; color:var(--text); line-height:1.3; }
+    .logo-text span { display:block; font-size:11px; font-weight:400; color:var(--muted); }
+    #clock { font-size:24px; font-weight:300; color:var(--text); letter-spacing:0.05em; }
+    #date  { font-size:11px; color:var(--muted); text-align:right; line-height:1.8; }
 
-    /* ── HEADER ── */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 28px 12px;
-      border-bottom: 0.5px solid var(--border);
-      background: var(--surface);
-      flex-shrink: 0;
-    }
-    .header-left { display: flex; align-items: center; gap: 14px; }
-    .logo-mark {
-      width: 36px; height: 36px;
-      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 700; color: #fff;
-    }
-    .logo-text { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
-    .logo-text span { display: block; font-size: 11px; font-weight: 400; color: var(--muted); }
-    .header-right { display: flex; align-items: center; gap: 20px; }
-    #clock { font-size: 22px; font-weight: 300; color: var(--text); letter-spacing: 0.04em; }
-    #date  { font-size: 12px; color: var(--muted); text-align: right; line-height: 1.8; }
+    /* LAYOUT — kiri: kerjasama+youtube, kanan: imigrasi */
+    .layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:16px 24px; height:calc(100vh - 60px); overflow:hidden; }
 
-    /* ── LAYOUT ── */
-    .layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      padding: 18px 28px;
-      height: calc(100vh - 68px);
-      overflow: hidden;
-    }
+    /* KOLOM KIRI */
+    .col-left { display:flex; flex-direction:column; gap:14px; min-height:0; }
 
-    /* ── PANEL ── */
-    .panel {
-      background: var(--card);
-      border: 0.5px solid var(--border);
-      border-radius: 14px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .panel-header {
-      padding: 14px 18px 10px;
-      border-bottom: 0.5px solid var(--border);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .panel-title {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .panel-title::before {
-      content: '';
-      display: inline-block;
-      width: 3px; height: 14px;
-      background: var(--accent);
-      border-radius: 2px;
-    }
-    .panel-count {
-      font-size: 11px;
-      color: var(--muted);
-      background: var(--surface);
-      padding: 3px 9px;
-      border-radius: 20px;
-      border: 0.5px solid var(--border);
-    }
+    /* PANEL */
+    .panel { background:var(--card); border:0.5px solid var(--border); border-radius:14px; display:flex; flex-direction:column; overflow:hidden; }
+    .panel-kerjasama { flex:1; min-height:0; }
 
-    /* ── STATS ROW ── */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      padding: 12px 18px;
-      flex-shrink: 0;
-      border-bottom: 0.5px solid var(--border);
-    }
-    .stat-card {
-      background: var(--surface);
-      border-radius: 10px;
-      padding: 10px 12px;
-      text-align: center;
-      border: 0.5px solid var(--border);
-    }
-    .stat-n { font-size: 24px; font-weight: 500; color: var(--text); }
-    .stat-n.yellow { color: var(--yellow); }
-    .stat-n.red    { color: var(--red); }
-    .stat-l { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .panel-header { padding:12px 16px 10px; border-bottom:0.5px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; }
+    .panel-title { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:8px; }
+    .panel-title::before { content:''; display:inline-block; width:3px; height:13px; background:var(--accent); border-radius:2px; }
+    .panel-count { font-size:11px; color:var(--muted); background:var(--surface); padding:2px 8px; border-radius:20px; border:0.5px solid var(--border); }
 
-    /* ── COUNTRY CHIPS ── */
-    .country-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      padding: 10px 18px;
-      flex-shrink: 0;
-      border-bottom: 0.5px solid var(--border);
-    }
-    .chip {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 10px;
-      font-size: 11px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .chip strong { color: var(--accent); font-weight: 600; }
+    /* YOUTUBE BOX */
+    .yt-box { background:var(--card); border:0.5px solid var(--border); border-radius:14px; overflow:hidden; flex-shrink:0; height:160px; position:relative; }
+    .yt-label { position:absolute; top:8px; left:10px; z-index:2; font-size:10px; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; color:rgba(255,255,255,0.5); background:rgba(0,0,0,0.5); padding:2px 8px; border-radius:10px; }
+    .yt-box iframe { width:100%; height:100%; border:none; display:block; }
 
-    /* ── SCROLL WRAPPER ── */
-    .scroll-outer {
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-    }
-    .scroll-outer::before,
-    .scroll-outer::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0;
-      height: 28px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .scroll-outer::before {
-      top: 0;
-      background: linear-gradient(to bottom, var(--card), transparent);
-    }
-    .scroll-outer::after {
-      bottom: 0;
-      background: linear-gradient(to top, var(--card), transparent);
-    }
-    .scroll-track {
-      display: flex;
-      flex-direction: column;
-      animation: scrollUp var(--scroll-speed) linear infinite;
-    }
-    .scroll-track:hover { animation-play-state: paused; }
-    @keyframes scrollUp {
-      0%   { transform: translateY(0); }
-      100% { transform: translateY(-50%); }
-    }
+    /* STATS ROW */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:10px 16px; flex-shrink:0; border-bottom:0.5px solid var(--border); }
+    .stat-card { background:var(--surface); border-radius:10px; padding:8px 10px; text-align:center; border:0.5px solid var(--border); }
+    .stat-n { font-size:22px; font-weight:500; color:var(--text); }
+    .stat-n.yellow { color:var(--yellow); }
+    .stat-n.red    { color:var(--red); }
+    .stat-l { font-size:10px; color:var(--muted); margin-top:1px; }
 
-    /* ── TABLE ── */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    thead th {
-      padding: 8px 14px;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: var(--surface);
-      border-bottom: 0.5px solid var(--border);
-      white-space: nowrap;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-    tbody tr {
-      border-bottom: 0.5px solid var(--border);
-      transition: background 0.15s;
-    }
-    tbody tr:hover { background: rgba(59,130,246,0.04); }
-    td {
-      padding: 9px 14px;
-      font-size: 12px;
-      color: var(--text);
-      vertical-align: middle;
-    }
-    .cell-main { font-size: 12px; color: var(--text); font-weight: 500; }
-    .cell-sub  { font-size: 10px; color: var(--muted); margin-top: 1px; }
+    /* COUNTRY CHIPS */
+    .country-row { display:flex; gap:6px; flex-wrap:wrap; padding:8px 16px; flex-shrink:0; border-bottom:0.5px solid var(--border); }
+    .chip { background:var(--surface); border:0.5px solid var(--border); border-radius:20px; padding:3px 9px; font-size:11px; color:var(--muted); display:flex; align-items:center; gap:4px; }
+    .chip strong { color:var(--accent); font-weight:600; }
 
-    /* ── BADGE ── */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 3px 8px;
-      border-radius: 20px;
-      font-size: 10px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .badge .dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-    }
-    .badge.green  { background: var(--green-bg);  color: var(--green);  }
-    .badge.green  .dot { background: var(--green); }
-    .badge.yellow { background: var(--yellow-bg); color: var(--yellow); }
-    .badge.yellow .dot { background: var(--yellow); }
-    .badge.red    { background: var(--red-bg);    color: var(--red);    }
-    .badge.red    .dot { background: var(--red); }
+    /* SCROLL */
+    .scroll-outer { flex:1; overflow:hidden; position:relative; min-height:0; }
+    .scroll-outer::before, .scroll-outer::after { content:''; position:absolute; left:0; right:0; height:24px; z-index:2; pointer-events:none; }
+    .scroll-outer::before { top:0; background:linear-gradient(to bottom,var(--card),transparent); }
+    .scroll-outer::after  { bottom:0; background:linear-gradient(to top,var(--card),transparent); }
+    .scroll-track { display:flex; flex-direction:column; }
+    .scroll-track.running { animation:scrollUp linear infinite; }
+    .scroll-track:hover { animation-play-state:paused; }
+    @keyframes scrollUp { 0%{transform:translateY(0)} 100%{transform:translateY(-50%)} }
 
-    /* ── DATE CELL ── */
-    .date-cell {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .date-val {
-      font-size: 11px;
-      font-weight: 500;
-    }
-    .date-val.green  { color: var(--green); }
-    .date-val.yellow { color: var(--yellow); }
-    .date-val.red    { color: var(--red); }
-    .date-days {
-      font-size: 10px;
-      color: var(--muted);
-    }
+    /* TABLE */
+    table { width:100%; border-collapse:collapse; }
+    thead th { padding:7px 12px; font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); background:var(--surface); border-bottom:0.5px solid var(--border); white-space:nowrap; }
+    tbody tr { border-bottom:0.5px solid var(--border); }
+    tbody tr:hover { background:rgba(59,130,246,0.04); }
+    td { padding:8px 12px; font-size:12px; color:var(--text); vertical-align:middle; }
+    .cell-main { font-size:12px; color:var(--text); font-weight:500; }
+    .cell-sub  { font-size:10px; color:var(--muted); margin-top:1px; }
 
-    /* ── NOTIF BAR ── */
-    .notif-bar {
-      flex-shrink: 0;
-      background: rgba(234,179,8,0.08);
-      border-top: 0.5px solid rgba(234,179,8,0.2);
-      padding: 8px 18px;
-      font-size: 11px;
-      color: var(--yellow);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .notif-bar.hidden { display: none; }
+    /* BADGE */
+    .badge { display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:20px; font-size:10px; font-weight:600; white-space:nowrap; }
+    .badge .dot { width:5px; height:5px; border-radius:50%; }
+    .badge.green  { background:var(--green-bg);  color:var(--green);  } .badge.green  .dot { background:var(--green); }
+    .badge.yellow { background:var(--yellow-bg); color:var(--yellow); } .badge.yellow .dot { background:var(--yellow); }
+    .badge.red    { background:var(--red-bg);    color:var(--red);    } .badge.red    .dot { background:var(--red); }
 
-    /* ── LOADER ── */
-    #loader {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 14px;
-      z-index: 100;
-      transition: opacity 0.4s;
-    }
-    .loader-spinner {
-      width: 36px; height: 36px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #loader p { font-size: 13px; color: var(--muted); }
+    /* DATE CELL */
+    .date-cell { display:flex; flex-direction:column; gap:1px; }
+    .date-val { font-size:11px; font-weight:500; }
+    .date-val.green  { color:var(--green); }
+    .date-val.yellow { color:var(--yellow); }
+    .date-val.red    { color:var(--red); }
+    .date-val.muted  { color:var(--muted); }
+    .date-days { font-size:10px; color:var(--muted); }
 
-    /* ── SCROLL SPEED PER PANEL ── */
-    #panel-kerjasama .scroll-track { animation-duration: 35s; }
-    #panel-imigrasi  .scroll-track { animation-duration: 40s; }
+    /* NOTIF BAR */
+    .notif-bar { flex-shrink:0; background:rgba(234,179,8,0.08); border-top:0.5px solid rgba(234,179,8,0.2); padding:6px 16px; font-size:11px; color:var(--yellow); display:flex; align-items:center; gap:8px; }
+    .notif-bar.hidden { display:none; }
+
+    /* LOADER */
+    #loader { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px; z-index:100; transition:opacity 0.4s; }
+    .loader-spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    #loader p { font-size:13px; color:var(--muted); }
   </style>
 </head>
 <body>
@@ -308,49 +118,54 @@
   <p>Memuat data dari Google Sheets…</p>
 </div>
 
-<!-- HEADER -->
 <header>
   <div class="header-left">
     <div class="logo-mark">IO</div>
-    <div class="logo-text">
-      International Office
-      <span>UIN Sunan Ampel Surabaya</span>
-    </div>
+    <div class="logo-text">International Office <span>UIN Sunan Ampel Surabaya</span></div>
   </div>
-  <div class="header-right">
-    <div>
-      <div id="date"></div>
-    </div>
+  <div style="display:flex;align-items:center;gap:20px">
+    <div id="date" style="text-align:right"></div>
     <div id="clock"></div>
   </div>
 </header>
 
-<!-- MAIN LAYOUT -->
 <div class="layout">
 
-  <!-- PANEL KERJASAMA -->
-  <div class="panel" id="panel-kerjasama">
-    <div class="panel-header">
-      <div class="panel-title">Data Kerjasama</div>
-      <span class="panel-count" id="count-kerjasama">— data</span>
-    </div>
-    <div class="scroll-outer">
-      <div class="scroll-track" id="track-kerjasama">
-        <!-- injected by JS -->
+  <!-- KOLOM KIRI: Kerjasama + YouTube -->
+  <div class="col-left">
+
+    <div class="panel panel-kerjasama" id="panel-kerjasama">
+      <div class="panel-header">
+        <div class="panel-title">Data Kerjasama</div>
+        <span class="panel-count" id="count-kerjasama">memuat…</span>
+      </div>
+      <div class="scroll-outer">
+        <div class="scroll-track" id="track-kerjasama"></div>
+      </div>
+      <div class="notif-bar hidden" id="notif-kerjasama">
+        ⚠ <span id="notif-kerjasama-text"></span>
       </div>
     </div>
-    <div class="notif-bar hidden" id="notif-kerjasama">
-      ⚠ <span id="notif-kerjasama-text"></span>
+
+    <!-- YOUTUBE EMBED -->
+    <div class="yt-box" id="yt-box">
+      <div class="yt-label">▶ Channel UINSA</div>
+      <iframe id="yt-frame"
+        src="https://www.youtube.com/embed/live_stream?channel=UCxxxxxxxxxxxxxxx&autoplay=1&mute=1&controls=0&modestbranding=1&rel=0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      </iframe>
     </div>
+
   </div>
 
-  <!-- PANEL IMIGRASI -->
+  <!-- KOLOM KANAN: Imigrasi -->
   <div class="panel" id="panel-imigrasi">
     <div class="panel-header">
       <div class="panel-title">Data Mahasiswa Asing</div>
-      <span class="panel-count" id="count-imigrasi">— mahasiswa</span>
+      <span class="panel-count" id="count-imigrasi">memuat…</span>
     </div>
-    <div class="stats-row" id="stats-imigrasi">
+    <div class="stats-row">
       <div class="stat-card"><div class="stat-n" id="s-total">—</div><div class="stat-l">Total Mahasiswa</div></div>
       <div class="stat-card"><div class="stat-n yellow" id="s-warn">—</div><div class="stat-l">Perlu Perhatian</div></div>
       <div class="stat-card"><div class="stat-n red" id="s-exp">—</div><div class="stat-l">Dokumen Expired</div></div>
@@ -358,9 +173,7 @@
     </div>
     <div class="country-row" id="country-chips"></div>
     <div class="scroll-outer" style="flex:1">
-      <div class="scroll-track" id="track-imigrasi">
-        <!-- injected by JS -->
-      </div>
+      <div class="scroll-track" id="track-imigrasi"></div>
     </div>
     <div class="notif-bar hidden" id="notif-imigrasi">
       ⚠ <span id="notif-imigrasi-text"></span>
@@ -371,58 +184,53 @@
 
 <script>
 // ══════════════════════════════════════════════════
-//  KONFIGURASI
+//  KONFIGURASI — edit sesuai kebutuhan
 // ══════════════════════════════════════════════════
 const CONFIG = {
-  // URL CSV publish langsung per sheet (File → Share → Publish to web → CSV)
+  // URL CSV publish (File → Publish to web → CSV)
   URL_KERJASAMA: 'https://docs.google.com/spreadsheets/d/1Pgrl3b464MYiRZfjQngvuM3r7i7XqklhDHZgHYslhAc/pub?gid=0&single=true&output=csv',
   URL_IMIGRASI:  'https://docs.google.com/spreadsheets/d/1Pgrl3b464MYiRZfjQngvuM3r7i7XqklhDHZgHYslhAc/pub?gid=1365686105&single=true&output=csv',
 
-  // Refresh data setiap X menit
-  REFRESH_MENIT: 5,
+  // YouTube: ganti dengan Video ID atau Playlist ID UINSA
+  // Untuk live stream channel: gunakan embed/live_stream?channel=CHANNEL_ID
+  // Untuk video biasa: gunakan embed/VIDEO_ID
+  // Untuk playlist: gunakan embed/videoseries?list=PLAYLIST_ID
+  YT_EMBED_URL: 'https://www.youtube.com/embed/videoseries?list=PLxxxxxxxxxxxxxxx&autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1',
 
-  // Threshold kuning: hari sebelum expired
+  REFRESH_MENIT: 5,
   WARN_HARI: 60,
 };
 
 // ══════════════════════════════════════════════════
 //  HELPERS
 // ══════════════════════════════════════════════════
-function gid(id) { return document.getElementById(id); }
+function el(id) { return document.getElementById(id); }
 
-const HARI_NAMA = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-const BULAN_NAMA = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-const BULAN_PANJANG = ['Januari','Februari','Maret','April','Mei','Juni',
-                       'Juli','Agustus','September','Oktober','November','Desember'];
+const HR_NAMA  = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const BL_NAMA  = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const BL_PANJANG = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
 function fmtDate(d) {
-  if (!d || !(d instanceof Date) || isNaN(d)) return '—';
-  return `${d.getDate()} ${BULAN_NAMA[d.getMonth()]} ${d.getFullYear()}`;
+  if (!d || isNaN(d)) return '—';
+  return `${d.getDate()} ${BL_NAMA[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 function parseDate(str) {
-  if (!str || str.trim() === '') return null;
-  // Coba format DD/MM/YYYY, DD-MM-YYYY, YYYY-MM-DD, dan serial Excel
+  if (!str || str.toString().trim() === '') return null;
   str = str.toString().trim();
-  let d;
-
-  // Serial number Excel (angka murni)
+  // Serial Excel
   if (/^\d{4,5}$/.test(str)) {
-    const serial = parseInt(str);
-    d = new Date((serial - 25569) * 86400 * 1000);
+    const d = new Date((parseInt(str) - 25569) * 86400 * 1000);
     if (!isNaN(d)) return d;
   }
-
   // DD/MM/YYYY atau DD-MM-YYYY
   const m1 = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-  if (m1) { d = new Date(+m1[3], +m1[2]-1, +m1[1]); if (!isNaN(d)) return d; }
-
+  if (m1) { const d = new Date(+m1[3], +m1[2]-1, +m1[1]); if (!isNaN(d)) return d; }
   // YYYY-MM-DD
   const m2 = str.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
-  if (m2) { d = new Date(+m2[1], +m2[2]-1, +m2[3]); if (!isNaN(d)) return d; }
-
-  // Coba langsung
-  d = new Date(str);
+  if (m2) { const d = new Date(+m2[1], +m2[2]-1, +m2[3]); if (!isNaN(d)) return d; }
+  // fallback
+  const d = new Date(str);
   return isNaN(d) ? null : d;
 }
 
@@ -439,35 +247,38 @@ function statusKelas(hari) {
   return 'green';
 }
 
-function badgeStatus(hari) {
-  const k = statusKelas(hari);
-  if (k === 'muted') return `<span style="color:var(--muted);font-size:11px">—</span>`;
-  const label = hari < 0 ? 'Expired' : hari === 0 ? 'Hari ini' : `${hari} hari`;
-  return `<span class="badge ${k}"><span class="dot"></span>${label}</span>`;
-}
-
 function dateCell(tglStr) {
   const tgl = parseDate(tglStr);
   const hari = hariSisa(tgl);
   const k = statusKelas(hari);
-  if (!tgl) return `<td><span style="color:var(--muted)">—</span></td>`;
-  const sisa = hari < 0 ? `Expired` : hari === 0 ? 'Hari ini' : `${hari}h`;
-  return `<td>
-    <div class="date-cell">
-      <span class="date-val ${k}">${fmtDate(tgl)}</span>
-      <span class="date-days">${sisa}</span>
-    </div>
-  </td>`;
+  if (!tgl) return `<td><span style="color:var(--muted);font-size:11px">—</span></td>`;
+  const sisa = hari < 0 ? 'Expired' : hari === 0 ? 'Hari ini' : `${hari} hari lagi`;
+  return `<td><div class="date-cell">
+    <span class="date-val ${k}">${fmtDate(tgl)}</span>
+    <span class="date-days">${sisa}</span>
+  </div></td>`;
 }
 
 // ══════════════════════════════════════════════════
-//  FETCH GOOGLE SHEETS (CSV)
+//  FETCH via allorigins proxy (bypass CORS)
 // ══════════════════════════════════════════════════
-async function fetchSheet(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Gagal fetch data (${res.status}). Pastikan spreadsheet sudah di-publish.`);
-  const text = await res.text();
-  return parseCSV(text);
+async function fetchCSV(csvUrl) {
+  // Coba langsung dulu (kalau CORS sudah oke dari browser TV)
+  try {
+    const res = await fetch(csvUrl, { cache: 'no-cache' });
+    if (res.ok) {
+      const text = await res.text();
+      if (text && !text.startsWith('<')) return text;
+    }
+  } catch(e) {}
+
+  // Fallback: pakai allorigins proxy
+  const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(csvUrl)}`;
+  const res2 = await fetch(proxy, { cache: 'no-cache' });
+  if (!res2.ok) throw new Error(`Gagal memuat data (${res2.status})`);
+  const text2 = await res2.text();
+  if (!text2 || text2.startsWith('<')) throw new Error('Data tidak valid. Pastikan spreadsheet sudah di-publish (File → Publish to web).');
+  return text2;
 }
 
 function parseCSV(text) {
@@ -478,12 +289,9 @@ function parseCSV(text) {
     let cur = '', inQ = false;
     for (let i = 0; i < line.length; i++) {
       const c = line[i];
-      if (c === '"') {
-        if (inQ && line[i+1] === '"') { cur += '"'; i++; }
-        else inQ = !inQ;
-      } else if (c === ',' && !inQ) {
-        cols.push(cur.trim()); cur = '';
-      } else cur += c;
+      if (c === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else cur += c;
     }
     cols.push(cur.trim());
     rows.push(cols);
@@ -494,9 +302,9 @@ function parseCSV(text) {
 function rowsToObjects(rows) {
   if (rows.length < 2) return [];
   const headers = rows[0].map(h => h.replace(/^"|"$/g,'').trim());
-  return rows.slice(1).map(row => {
+  return rows.slice(1).filter(r => r.some(c => c.trim())).map(row => {
     const obj = {};
-    headers.forEach((h, i) => { obj[h] = (row[i] || '').replace(/^"|"$/g,'').trim(); });
+    headers.forEach((h,i) => { obj[h] = (row[i]||'').replace(/^"|"$/g,'').trim(); });
     return obj;
   });
 }
@@ -504,65 +312,52 @@ function rowsToObjects(rows) {
 // ══════════════════════════════════════════════════
 //  RENDER KERJASAMA
 // ══════════════════════════════════════════════════
+function getVal(row, aliases) {
+  for (const k of aliases) if (row[k] !== undefined) return row[k];
+  return '';
+}
+
 function renderKerjasama(data) {
-  gid('count-kerjasama').textContent = `${data.length} data`;
-
-  const keys = { kampus: ['Kampus','Kampus / Partner'], unit: ['Unit Fakultas','Unit','Fakultas'],
-    negara: ['Negara'], mulai: ['Mulai','Tanggal Mulai'], akhir: ['Berakhir','Tanggal Berakhir'],
-    jenis: ['Jenis','Jenis Kerjasama'], status: ['Status'], link: ['LINK','Link'] };
-
-  function val(row, key) {
-    for (const k of keys[key]) if (row[k] !== undefined) return row[k];
-    return '';
-  }
+  el('count-kerjasama').textContent = `${data.length} data`;
 
   let warnCount = 0;
-  let rows = data.map(row => {
-    const akhirTgl = parseDate(val(row, 'akhir'));
-    const hari = hariSisa(akhirTgl);
-    const kelas = statusKelas(hari);
+  const rows = data.map(row => {
+    const kampus = getVal(row, ['Kampus','Kampus / Partner','Perguruan Tinggi','Nama Institusi']);
+    const unit   = getVal(row, ['Unit Fakultas','Unit','Fakultas','Prodi']);
+    const negara = getVal(row, ['Negara','Asal Negara','Country']);
+    const mulai  = getVal(row, ['Mulai','Tanggal Mulai','Tgl Mulai','Mulai Berlaku']);
+    const akhir  = getVal(row, ['Berakhir','Tanggal Berakhir','Tgl Berakhir','Berakhir Berlaku','Masa Berlaku','Akhir']);
+    const jenis  = getVal(row, ['Jenis','Jenis Kerjasama','Jenis MoU']);
+    const mulaiTgl = parseDate(mulai);
+    const akhirTgl = parseDate(akhir);
+    const hari   = hariSisa(akhirTgl);
+    const kelas  = statusKelas(hari);
     if (kelas === 'yellow' || kelas === 'red') warnCount++;
-
     const statusTeks = kelas === 'red' ? 'Expired' : kelas === 'yellow' ? 'Hampir Habis' : 'Aktif';
-    const mulaiTgl = parseDate(val(row, 'mulai'));
-
     return `<tr>
-      <td>
-        <div class="cell-main">${val(row,'kampus') || '—'}</div>
-        <div class="cell-sub">${val(row,'unit')}</div>
-      </td>
-      <td><div class="cell-main">${val(row,'negara')}</div></td>
-      <td><div class="cell-main" style="color:#a5b4fc">${val(row,'jenis')}</div></td>
-      <td>
-        <div class="date-cell">
-          <span class="date-val" style="color:var(--muted)">${fmtDate(mulaiTgl)}</span>
-        </div>
-      </td>
-      ${dateCell(val(row,'akhir'))}
+      <td><div class="cell-main">${kampus||'—'}</div><div class="cell-sub">${unit}</div></td>
+      <td><div class="cell-main">${negara}</div></td>
+      <td><div class="cell-main" style="color:#a5b4fc;font-size:11px">${jenis}</div></td>
+      <td><div class="date-cell"><span class="date-val muted">${fmtDate(mulaiTgl)}</span></div></td>
+      ${dateCell(akhir)}
       <td><span class="badge ${kelas}"><span class="dot"></span>${statusTeks}</span></td>
     </tr>`;
   }).join('');
 
-  const tableHTML = `
-    <table>
-      <thead><tr>
-        <th>Kampus / Unit</th>
-        <th>Negara</th>
-        <th>Jenis</th>
-        <th>Mulai</th>
-        <th>Berakhir</th>
-        <th>Status</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+  const tbl = `<table>
+    <thead><tr>
+      <th>Kampus / Unit</th><th>Negara</th><th>Jenis</th><th>Mulai</th><th>Berakhir</th><th>Status</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 
-  const track = gid('track-kerjasama');
-  track.innerHTML = tableHTML + tableHTML; // duplikat untuk seamless scroll
+  const track = el('track-kerjasama');
+  track.innerHTML = tbl + tbl;
+  startScroll(track, 40);
 
   if (warnCount > 0) {
-    gid('notif-kerjasama').classList.remove('hidden');
-    gid('notif-kerjasama-text').textContent =
-      `${warnCount} kerjasama perlu perhatian (expired atau hampir habis masa berlakunya)`;
+    el('notif-kerjasama').classList.remove('hidden');
+    el('notif-kerjasama-text').textContent = `${warnCount} kerjasama perlu perhatian (expired atau hampir habis)`;
   }
 }
 
@@ -570,84 +365,89 @@ function renderKerjasama(data) {
 //  RENDER IMIGRASI
 // ══════════════════════════════════════════════════
 function renderImigrasi(data) {
-  gid('count-imigrasi').textContent = `${data.length} mahasiswa`;
-  gid('s-total').textContent = data.length;
-
-  const keys = {
-    nama:   ['Nama','Nama Mahasiswa'],
-    negara: ['Negara','Asal Negara'],
-    paspor: ['Masa Berlaku Paspor','Paspor'],
-    itas:   ['Masa Berlaku ITAS','ITAS'],
-    stm:    ['Masa Berlaku SKJ/STM','SKJ/STM','STM'],
-    sktt:   ['Masa Berlaku SKTT','SKTT'],
-  };
-
-  function val(row, key) {
-    for (const k of keys[key]) if (row[k] !== undefined) return row[k];
-    return '';
-  }
+  el('count-imigrasi').textContent = `${data.length} mahasiswa`;
+  el('s-total').textContent = data.length;
 
   let warnSet = new Set(), expSet = new Set();
   const negaraMap = {};
 
   data.forEach(row => {
-    const neg = val(row, 'negara') || 'Lainnya';
-    negaraMap[neg] = (negaraMap[neg] || 0) + 1;
+    const nama   = getVal(row, ['Nama','Nama Mahasiswa','Name']);
+    const negara = getVal(row, ['Negara','Asal Negara','Country','Kewarganegaraan']);
+    negaraMap[negara || 'Lainnya'] = (negaraMap[negara||'Lainnya'] || 0) + 1;
 
-    ['paspor','itas','stm','sktt'].forEach(k => {
-      const tgl = parseDate(val(row, k));
-      const hari = hariSisa(tgl);
-      if (hari !== null && hari < 0)  expSet.add(val(row,'nama'));
-      if (hari !== null && hari >= 0 && hari <= CONFIG.WARN_HARI) warnSet.add(val(row,'nama'));
+    const dokKeys = [
+      getVal(row, ['Masa Berlaku Paspor','Paspor','Berlaku Paspor']),
+      getVal(row, ['Masa Berlaku ITAS','ITAS','Berlaku ITAS']),
+      getVal(row, ['Masa Berlaku SKJ/STM','SKJ/STM','STM','Berlaku STM']),
+      getVal(row, ['Masa Berlaku SKTT','SKTT','Berlaku SKTT']),
+    ];
+    dokKeys.forEach(v => {
+      const h = hariSisa(parseDate(v));
+      if (h !== null && h < 0) expSet.add(nama);
+      else if (h !== null && h <= CONFIG.WARN_HARI) warnSet.add(nama);
     });
   });
 
-  gid('s-warn').textContent = warnSet.size;
-  gid('s-exp').textContent  = expSet.size;
-  gid('s-neg').textContent  = Object.keys(negaraMap).length;
+  el('s-warn').textContent = warnSet.size;
+  el('s-exp').textContent  = expSet.size;
+  el('s-neg').textContent  = Object.keys(negaraMap).length;
 
-  // Country chips
   const sorted = Object.entries(negaraMap).sort((a,b) => b[1]-a[1]);
-  gid('country-chips').innerHTML = sorted.map(([neg, n]) =>
+  el('country-chips').innerHTML = sorted.map(([neg,n]) =>
     `<div class="chip">${neg} <strong>${n}</strong></div>`).join('');
 
-  let rows = data.map(row => {
-    const nama   = val(row, 'nama');
-    const negara = val(row, 'negara');
-
+  const rows = data.map(row => {
+    const nama   = getVal(row, ['Nama','Nama Mahasiswa','Name']);
+    const negara = getVal(row, ['Negara','Asal Negara','Country','Kewarganegaraan']);
+    const paspor = getVal(row, ['Masa Berlaku Paspor','Paspor','Berlaku Paspor']);
+    const itas   = getVal(row, ['Masa Berlaku ITAS','ITAS','Berlaku ITAS']);
+    const stm    = getVal(row, ['Masa Berlaku SKJ/STM','SKJ/STM','STM','Berlaku STM']);
+    const sktt   = getVal(row, ['Masa Berlaku SKTT','SKTT','Berlaku SKTT']);
     return `<tr>
-      <td>
-        <div class="cell-main">${nama || '—'}</div>
-        <div class="cell-sub">${negara}</div>
-      </td>
-      ${dateCell(val(row,'paspor'))}
-      ${dateCell(val(row,'itas'))}
-      ${dateCell(val(row,'stm'))}
-      ${dateCell(val(row,'sktt'))}
+      <td><div class="cell-main">${nama||'—'}</div><div class="cell-sub">${negara}</div></td>
+      ${dateCell(paspor)}
+      ${dateCell(itas)}
+      ${dateCell(stm)}
+      ${dateCell(sktt)}
     </tr>`;
   }).join('');
 
-  const tableHTML = `
-    <table>
-      <thead><tr>
-        <th>Nama / Negara</th>
-        <th>Paspor</th>
-        <th>ITAS</th>
-        <th>SKJ/STM</th>
-        <th>SKTT</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+  const tbl = `<table>
+    <thead><tr>
+      <th>Nama / Negara</th><th>Paspor</th><th>ITAS</th><th>SKJ/STM</th><th>SKTT</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 
-  const track = gid('track-imigrasi');
-  track.innerHTML = tableHTML + tableHTML;
+  const track = el('track-imigrasi');
+  track.innerHTML = tbl + tbl;
+  startScroll(track, 45);
 
   const warnAll = warnSet.size + expSet.size;
   if (warnAll > 0) {
-    gid('notif-imigrasi').classList.remove('hidden');
-    gid('notif-imigrasi-text').textContent =
+    el('notif-imigrasi').classList.remove('hidden');
+    el('notif-imigrasi-text').textContent =
       `${expSet.size} dokumen expired · ${warnSet.size} mahasiswa mendekati batas masa berlaku`;
   }
+}
+
+// ══════════════════════════════════════════════════
+//  AUTO SCROLL — dinamis berdasar tinggi konten
+// ══════════════════════════════════════════════════
+function startScroll(track, defaultSec) {
+  // Hitung durasi proporsional: makin banyak baris, makin lambat
+  const rowCount = track.querySelectorAll('tbody tr').length / 2; // dibagi 2 karena duplikat
+  const dur = Math.max(defaultSec, rowCount * 3); // 3 detik per baris, minimal defaultSec
+  track.style.animationDuration = dur + 's';
+  track.classList.add('running');
+}
+
+// ══════════════════════════════════════════════════
+//  YOUTUBE
+// ══════════════════════════════════════════════════
+function initYoutube() {
+  el('yt-frame').src = CONFIG.YT_EMBED_URL;
 }
 
 // ══════════════════════════════════════════════════
@@ -658,41 +458,45 @@ function updateClock() {
   const hh = String(now.getHours()).padStart(2,'0');
   const mm = String(now.getMinutes()).padStart(2,'0');
   const ss = String(now.getSeconds()).padStart(2,'0');
-  gid('clock').textContent = `${hh}:${mm}:${ss}`;
-  gid('date').innerHTML =
-    `${HARI_NAMA[now.getDay()]}, ${now.getDate()} ${BULAN_PANJANG[now.getMonth()]} ${now.getFullYear()}`;
+  el('clock').textContent = `${hh}:${mm}:${ss}`;
+  el('date').innerHTML = `${HR_NAMA[now.getDay()]}, ${now.getDate()} ${BL_PANJANG[now.getMonth()]} ${now.getFullYear()}`;
 }
 setInterval(updateClock, 1000);
 updateClock();
 
 // ══════════════════════════════════════════════════
-//  MAIN LOAD
+//  MAIN
 // ══════════════════════════════════════════════════
 async function loadData() {
   try {
-    const [rawK, rawI] = await Promise.all([
-      fetchSheet(CONFIG.URL_KERJASAMA),
-      fetchSheet(CONFIG.URL_IMIGRASI),
+    const [textK, textI] = await Promise.all([
+      fetchCSV(CONFIG.URL_KERJASAMA),
+      fetchCSV(CONFIG.URL_IMIGRASI),
     ]);
-    renderKerjasama(rowsToObjects(rawK));
-    renderImigrasi(rowsToObjects(rawI));
-  } catch (e) {
-    console.error(e);
-    gid('loader').innerHTML = `
-      <div style="text-align:center;color:#ef4444;max-width:400px;padding:24px">
+    renderKerjasama(rowsToObjects(parseCSV(textK)));
+    renderImigrasi(rowsToObjects(parseCSV(textI)));
+  } catch(e) {
+    el('loader').innerHTML = `
+      <div style="text-align:center;max-width:440px;padding:24px">
         <div style="font-size:28px;margin-bottom:12px">⚠</div>
-        <div style="font-size:15px;margin-bottom:8px">Gagal memuat data</div>
-        <div style="font-size:12px;color:#6b7194;line-height:1.6">${e.message}<br><br>
-          Pastikan Sheet ID sudah benar dan spreadsheet sudah di-share (Anyone with link → Viewer).
+        <div style="font-size:15px;margin-bottom:8px;color:#ef4444">Gagal memuat data</div>
+        <div style="font-size:12px;color:#6b7194;line-height:1.8">${e.message}</div>
+        <div style="font-size:11px;color:#6b7194;margin-top:16px;line-height:1.8">
+          Pastikan spreadsheet sudah di-publish:<br>
+          <strong style="color:#e2e6f3">File → Share → Publish to web → CSV → Publish</strong>
         </div>
+        <button onclick="location.reload()" style="margin-top:20px;padding:8px 20px;background:#3b82f6;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px">Coba Lagi</button>
       </div>`;
+    el('loader').style.display = 'flex';
     return;
   }
 
   // Sembunyikan loader
-  const loader = gid('loader');
+  const loader = el('loader');
   loader.style.opacity = '0';
   setTimeout(() => loader.style.display = 'none', 400);
+
+  initYoutube();
 
   // Auto-refresh
   setTimeout(loadData, CONFIG.REFRESH_MENIT * 60 * 1000);
